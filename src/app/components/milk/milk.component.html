@@ -1,0 +1,227 @@
+<div class="milk-container">
+  <div class="header">
+    <h2>Milk Production Records</h2>
+    <button class="btn btn-primary" (click)="openForm()">+ Add Record</button>
+  </div>
+
+  <div *ngIf="showForm" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>{{ editingId ? 'Edit Milk Record' : 'Add Milk Record' }}</h3>
+        <button class="close-btn" (click)="closeForm()">×</button>
+      </div>
+      
+      <form (ngSubmit)="saveRecord()" class="form">
+        <div class="form-group">
+          <label>Animal</label>
+          <select [(ngModel)]="form.animalId" name="animalId" required>
+            <option value="">Select an animal</option>
+            <option *ngFor="let animal of animals" [value]="animal.id">
+              {{ animal.name }} ({{ animal.type }})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" [(ngModel)]="form.date" name="date" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Quantity (Liters)</label>
+            <input type="number" [(ngModel)]="form.quantity" name="quantity" step="0.1" required>
+          </div>
+
+          <div class="form-group">
+            <label>Quality</label>
+            <select [(ngModel)]="form.quality" name="quality">
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Temperature (°C)</label>
+          <input type="number" [(ngModel)]="form.temperature" name="temperature" step="0.1" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" (click)="closeForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="records-table">
+    <div *ngIf="records.length === 0" class="empty-state">
+      <p>No milk records yet. Start recording milk production!</p>
+    </div>
+
+    <table *ngIf="records.length > 0">
+      <thead>
+        <tr>
+          <th>Animal</th>
+          <th>Date</th>
+          <th>Quantity (L)</th>
+          <th>Quality</th>
+          <th>Temperature (°C)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of records">
+          <td>{{ getAnimalName(record.animalId) }}</td>
+          <td>{{ record.date | date:'short' }}</td>
+          <td>{{ record.quantity | number:'1.2-2' }}</td>
+          <td>
+            <span class="badge" [style.backgroundColor]="getQualityColor(record.quality)" (click)="toggleQuality(record)" style="cursor: pointer;">
+              {{ record.quality | uppercase }}
+            </span>
+          </td>
+          <td>{{ record.temperature | number:'1.1-1' }}</td>
+          <td class="actions">
+            <button class="btn btn-sm btn-primary" (click)="openForm(record)">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteRecord(record.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .milk-container {
+    padding: 20px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .form-group label {
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .records-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead {
+    background: #f5f5f5;
+  }
+
+  th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .badge {
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    display: inline-block;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+</style>

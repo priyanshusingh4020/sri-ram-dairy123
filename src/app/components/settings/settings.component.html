@@ -1,0 +1,232 @@
+<div class="settings-container">
+  <h2>⚙️ Settings & Database Management</h2>
+
+  <div class="info-section">
+    <h3>Database Status</h3>
+    <div class="status-card">
+      <div class="status-item">
+        <span class="label">Connection:</span>
+        <span class="badge badge-success">{{ databaseStatus }}</span>
+      </div>
+      <div class="status-item">
+        <span class="label">Total Animals:</span>
+        <span class="value">{{ totalAnimals }}</span>
+      </div>
+      <div class="status-item">
+        <span class="label">Milk Records:</span>
+        <span class="value">{{ totalMilkRecords }}</span>
+      </div>
+      <div class="status-item">
+        <span class="label">Health Records:</span>
+        <span class="value">{{ totalHealthRecords }}</span>
+      </div>
+      <div class="status-item">
+        <span class="label">Feeding Records:</span>
+        <span class="value">{{ totalFeedingRecords }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-section">
+    <h3>Data Management</h3>
+    
+    <div class="action-card">
+      <div class="action-header">
+        <h4>📥 Export Data</h4>
+        <p>Download all farm data as JSON file</p>
+      </div>
+      <button class="btn btn-primary" (click)="exportData()">Export All Data</button>
+    </div>
+
+    <div class="action-card">
+      <div class="action-header">
+        <h4>💾 Backup Database</h4>
+        <p>Create a backup of the current database</p>
+      </div>
+      <button class="btn btn-primary" (click)="backupDatabase()">Backup Now</button>
+    </div>
+
+    <div class="action-card">
+      <div class="action-header">
+        <h4>🔄 Refresh Data</h4>
+        <p>Reload all data from database</p>
+      </div>
+      <button class="btn btn-primary" (click)="refreshDatabase()">Refresh</button>
+    </div>
+
+    <div class="action-card">
+      <div class="action-header">
+        <h4>📋 Load Demo Data</h4>
+        <p>Load sample farm data (4 animals, milk, health & feeding records)</p>
+      </div>
+      <button class="btn btn-primary" (click)="loadDemoData()">Load Demo Data</button>
+    </div>
+
+    <div class="action-card danger">
+      <div class="action-header">
+        <h4>🗑️ Clear All Data</h4>
+        <p class="warning">⚠️ This will permanently delete ALL farm data</p>
+      </div>
+      <button class="btn btn-danger" (click)="clearAllData()">Clear All Data</button>
+    </div>
+  </div>
+
+  <div *ngIf="showConfirmDialog" class="modal">
+    <div class="modal-content confirm-dialog">
+      <div class="modal-header">
+        <h3>Confirm Action</h3>
+      </div>
+      <div class="modal-body">
+        <p>{{ confirmMessage }}</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-danger" (click)="confirmAction_execute()">Confirm</button>
+        <button class="btn btn-secondary" (click)="cancelConfirm()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .settings-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .settings-container h2 {
+    margin-bottom: 30px;
+    font-size: 28px;
+  }
+
+  .info-section,
+  .actions-section {
+    margin-bottom: 40px;
+  }
+
+  .info-section h3,
+  .actions-section h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  .status-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .status-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+  }
+
+  .status-item .label {
+    font-weight: 600;
+    color: #666;
+  }
+
+  .status-item .value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #667eea;
+  }
+
+  .badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .badge-success {
+    background: #10b981;
+    color: white;
+  }
+
+  .action-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .action-card.danger {
+    border-left: 4px solid #ef4444;
+  }
+
+  .action-header h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+  }
+
+  .action-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .action-header p.warning {
+    color: #ef4444;
+    font-weight: 600;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .confirm-dialog .modal-header {
+    margin-bottom: 20px;
+  }
+
+  .confirm-dialog .modal-header h3 {
+    margin: 0;
+  }
+
+  .modal-body {
+    margin-bottom: 20px;
+  }
+
+  .modal-body p {
+    margin: 0;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .modal-actions button {
+    flex: 1;
+  }
+</style>

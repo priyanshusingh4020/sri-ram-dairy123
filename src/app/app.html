@@ -1,0 +1,28 @@
+<div *ngIf="isAuthenticated$ | async" class="app-container">
+  <h1>🐄 Sri Ram Dairy Farm Management System</h1>
+
+  <nav class="navbar">
+    <div class="nav-links">
+      <a routerLink="/dashboard">📊 Dashboard</a>
+      <a routerLink="/animal">🐄 Animals</a>
+      <a routerLink="/milk">🥛 Milk Production</a>
+      <a routerLink="/health">⚕️ Health</a>
+      <a routerLink="/feeding">🌾 Feeding</a>
+      <a routerLink="/settings">⚙️ Settings</a>
+    </div>
+
+    <div class="user-section">
+      <span class="user-info">👤 Welcome back!</span>
+      <button class="btn btn-logout" (click)="logout()">🚪 Logout</button>
+    </div>
+  </nav>
+
+  <hr>
+
+  <router-outlet></router-outlet>
+</div>
+
+<div *ngIf="!(isAuthenticated$ | async)" class="auth-redirect">
+  <router-outlet></router-outlet>
+</div>
+
