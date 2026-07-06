@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { App } from './app';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
@@ -6,7 +7,7 @@ import { routes } from './app.routes';
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, HttpClientTestingModule],
       providers: [provideRouter(routes)]
     }).compileComponents();
   });

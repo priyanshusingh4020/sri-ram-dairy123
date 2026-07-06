@@ -35,12 +35,13 @@ export class LoginComponent {
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
         this.isLoading = false;
+        this.errorMessage = '';
         alert(`Welcome ${response.user.name}!`);
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Login failed. Please try again.';
+        this.errorMessage = err?.error?.message || err?.message || 'Login failed. Please try again.';
         console.error('Login error:', err);
       }
     });

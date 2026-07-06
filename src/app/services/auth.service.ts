@@ -109,17 +109,17 @@ export class AuthService {
   // Handle HTTP errors
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
-      // Client-side error
       errorMessage = `Error: ${error.error.message}`;
+    } else if (typeof error.error === 'object' && error.error !== null) {
+      errorMessage = error.error.message || error.error.error || `Server Error: ${error.status}`;
     } else {
-      // Server-side error
-      errorMessage = error.error?.message || `Server Error: ${error.status}`;
+      errorMessage = `Server Error: ${error.status}`;
     }
-    
+
     this.error$.next(errorMessage);
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => ({ ...error, error: { ...error.error, message: errorMessage } }));
   }
 
   // Get current user observable
